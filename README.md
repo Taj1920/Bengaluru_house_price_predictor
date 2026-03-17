@@ -5,6 +5,7 @@
 2. [Anaconda](https://www.anaconda.com/download)
 3. [GitCLI](https://git-scm.com/install/)
 4. [StreamlitCloudAccount](https://streamlit.io/cloud)
+4. [RenderAccount](https://render.com/)
 
 ### Project Setup
 
@@ -24,3 +25,7 @@ pip install -r requirements.txt
 ```
 
 ### About App
+
+
+### Deployment
+1. FastAPI Deployment on Render:

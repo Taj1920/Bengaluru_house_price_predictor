@@ -6,7 +6,7 @@ import pandas as pd
 app = FastAPI()
 
 #load model pipeline
-with open("RF_Model_pipeline.pkl",'rb') as file:
+with open("backend/RF_Model_pipeline.pkl",'rb') as file:
     pipe = pickle.load(file)
 
 
@@ -30,7 +30,7 @@ def predict(data:HouseData):
 
 @app.get("/cleaned_dataframe")
 def get_data():
-    df = pd.read_csv("cleaned.csv")
+    df = pd.read_csv("datasetcleaned.csv")
     return df.to_dict()
 
 @app.get("/unique_locations")
