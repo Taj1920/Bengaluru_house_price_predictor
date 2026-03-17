@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-import pickle
 import time
 import json
+import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
 import plotly.express as px
@@ -11,9 +11,15 @@ st.set_page_config(page_title="Bengaluru House price predictor",page_icon="icons
 st.sidebar.subheader("House Price Predictor")
 st.sidebar.image("icons/house_logo.png",width=150)
 st.subheader("Welcome! to House Price Predictor💰")
-df = pd.read_csv("cleaned_df.csv")
 
 selection = st.segmented_control(None,['Home','Predict Price',"Dashboard",'Sample Data'],default='Home')
+
+#load cleaned data
+response = requests.get("http://127.0.0.1:8000/cleaned_dataframe")
+try:
+    df = pd.DataFrame(response.json())
+except:
+    st.error("No Data Found")
 
 def load_house_anime():
     with open("home_anime.json",'rb') as file:
@@ -23,8 +29,12 @@ def load_house_anime():
 if selection=='Home':
     c1,c2=st.columns([1,2])
     with c1:
-        anime = load_house_anime()
-        st_lottie(anime,width=300)
+        try:
+            anime = load_house_anime()
+            st_lottie(anime,width=300)
+        except:
+            st.error("No anime Found")
+
     with c2.container(border=True,height=300):
         st.markdown("""
                     ##### 🏠 About This App
@@ -46,23 +56,14 @@ if selection=='Home':
 
                     """)
 elif selection=="Predict Price":
+    response = requests.get("http://127.0.0.1:8000/unique_locations")
+    locations = response.json()
     with st.container(border=True):
         col1,col2 = st.columns(2)
-        loc = col1.selectbox("📍Location: ",options=df['location'].unique())
+        loc = col1.selectbox("📍Location: ",options=locations)
         sqft = col1.selectbox("📐Total Sqft: ",options=np.arange(300.0,35000.0,100.0))
         bhk = col2.selectbox("🏠BHK: ",options=np.arange(1,6,1.0))
         bath = col2.selectbox("🛁 Bath Room: ",options=np.arange(1,6,1.0))
-
-    #To get location from encoded location
-    for i,j in zip(df['location'].unique(),df['encoded_loc'].unique()):
-        if i==loc:
-            location=j
-            break
-    data = [[location,sqft,bath,bhk]]
-
-    #model
-    with open('RFmodel.pkl','rb') as file:
-        model = pickle.load(file)
 
     @st.dialog("🏡 House Details")
     def house_details(loc,sqft,bhk,bath,prediction):
@@ -73,7 +74,15 @@ elif selection=="Predict Price":
         st.subheader(f"Predicted Price: ₹ {np.round(prediction,2)}")
     c1,c2,c3 = st.columns(3)
     if c2.button('💰 Predict Price'):
-        prediction = model.predict(data)[0]*100000
+        input_data = {"location":loc,
+                      "total_sqft":sqft,
+                      "bhk":bhk,
+                      "bath":bath}
+        response = requests.post("http://127.0.0.1:8000/predict_price",json=input_data)
+        try:
+            prediction=response.json()["predicted_price"]
+        except:
+            st.error("No Data Found")
         with st.spinner('Predicting....'):
             time.sleep(1)
             house_details(loc,sqft,bhk,bath,prediction)
@@ -93,6 +102,13 @@ elif selection=="Dashboard":
 
             fig = px.histogram(df,x='price',nbins=30,height=350)
             a1.plotly_chart(fig)
+
 elif selection=='Sample Data':
-    df = df.drop("Unnamed: 0",axis=1)
-    st.dataframe(df.sample(20),hide_index=True,height=300)
+    response = requests.get("http://127.0.0.1:8000/sample_dataframe")
+    try:
+        sample_data = response.json()
+        df = pd.DataFrame(sample_data)
+        df = df.drop("Unnamed: 0",axis=1)
+        st.dataframe(df,hide_index=True,height=300)
+    except:
+        st.error("No Data Found")
