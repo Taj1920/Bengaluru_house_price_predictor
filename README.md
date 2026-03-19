@@ -6,7 +6,7 @@ A full-stack Machine Learning application that predicts house prices in Bengalur
 
 ## 🌐 Live Demo
 
-* 🔗 Frontend (Streamlit App): *(Add your Streamlit URL here)*
+* 🔗 Frontend (Streamlit App): https://bengaluruhousepricepredictor-crnjfkegjekrjv6j39fbux.streamlit.app/
 * 🔗 Backend API: https://bengaluru-house-price-predictor-gt52.onrender.com
 * 📄 API Docs: https://bengaluru-house-price-predictor-gt52.onrender.com/docs
 
