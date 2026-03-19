@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import time
 import json
+import os
 import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
@@ -9,7 +10,9 @@ import plotly.express as px
 
 st.set_page_config(page_title="Bengaluru House price predictor",page_icon="assets/house_logo.png",layout="wide")
 st.sidebar.subheader("House Price Predictor")
-st.sidebar.image("assets/house_logo.png",width=150)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(BASE_DIR,'..','assets','house_logo.png')
+st.sidebar.image(file_path,width=150)
 st.subheader("Welcome! to House Price Predictor💰")
 
 selection = st.segmented_control(None,['Home','Predict Price',"Dashboard",'Sample Data'],default='Home')
