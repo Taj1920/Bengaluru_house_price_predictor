@@ -33,15 +33,18 @@ def predict(data:HouseData):
 
 @app.get("/cleaned_dataframe")
 def get_data():
-    df = pd.read_csv("datasetcleaned.csv")
+    file_path = os.path.join(BASE_DIR,'..','datasets','cleaned_dataset.csv')
+    df = pd.read_csv(file_path)
     return df.to_dict()
 
 @app.get("/unique_locations")
 def get_locations():
-    df = pd.read_csv("cleaned.csv")
+    file_path = os.path.join(BASE_DIR,'..','datasets','cleaned_dataset.csv')
+    df = pd.read_csv(file_path)
     return df["location"].unique().tolist()
 
 @app.get("/sample_dataframe")
 def get_sample_data(n_samples:int=20):
-    df = pd.read_csv("cleaned.csv")
+    file_path = os.path.join(BASE_DIR,'..','datasets','cleaned_dataset.csv')
+    df = pd.read_csv(file_path)
     return df.sample(n_samples).to_dict()
