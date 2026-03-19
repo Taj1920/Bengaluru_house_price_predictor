@@ -1,1 +1,1 @@
-python-3.10s
+python-3.10
