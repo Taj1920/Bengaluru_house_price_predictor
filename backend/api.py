@@ -2,11 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
 import pandas as pd
+import os
 
 app = FastAPI()
 
 #load model pipeline
-with open("backend/RF_Model_pipeline.pkl",'rb') as file:
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+pipeline_path = os.path.join(BASE_DIR,"..","backend","RF_Model_pipeline.pkl")
+with open(pipeline_path,'rb') as file:
     pipe = pickle.load(file)
 
 
